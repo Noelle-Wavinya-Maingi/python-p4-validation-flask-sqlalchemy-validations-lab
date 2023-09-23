@@ -65,8 +65,8 @@ class Post(db.Model):
     
     @validates('title')
     def validate_title(self, key, title):
-        clickbait_keywords = ['clickbait', 'shocking', 'unbelievable', 'secret', 'revealed', 'you won\'t believe']
+        clickbait_keywords = ['Secret', 'Won\'t believe', 'Top', 'Guess']
         
-        if any(keyword in title.lower() for keyword in clickbait_keywords):
+        if not any(keyword in title for keyword in clickbait_keywords):
             raise ValueError("Title contains clickbait keywords.")
         return title
