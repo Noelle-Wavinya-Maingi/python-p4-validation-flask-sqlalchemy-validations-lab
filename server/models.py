@@ -14,6 +14,18 @@ class Author(db.Model):
 
     def __repr__(self):
         return f'Author(id={self.id}, name={self.name})'
+    
+    @validates('name')
+    def validate_name(self, key, name):
+        if not name:
+            raise ValueError("Name is required for an author")
+        return name
+    
+    @validates('phone_number')
+    def validate_number(self, key, phone_number):
+        if len(phone_number) != 10:
+            raise ValueError("Phone number must be exactly 10 digits")
+        return phone_number
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -30,3 +42,31 @@ class Post(db.Model):
 
     def __repr__(self):
         return f'Post(id={self.id}, title={self.title} content={self.content}, summary={self.summary})'
+    
+    @validates('content')
+    def validate_content(self, key, content):
+        if len(content) < 250:
+            raise ValueError("Content must have at least 250 characters.")
+        return content
+    
+    @validates('summary')
+    def validate_summary(self, key, summary):
+        if len(summary) > 249:
+            raise ValueError("Summary must have a maximum of 250 characters.")
+        return summary
+    
+    @validates('category')
+    def validate_category(self, key, category):
+        valid_categories = ['Fiction', 'Non-Fiction']
+
+        if category not in valid_categories:
+            raise ValueError("Invalid category, Choose from: Fiction and non-fiction")
+        return category
+    
+    @validates('title')
+    def validate_title(self, key, title):
+        clickbait_keywords = ['clickbait', 'shocking', 'unbelievable', 'secret', 'revealed', 'you won\'t believe']
+        
+        if any(keyword in title.lower() for keyword in clickbait_keywords):
+            raise ValueError("Title contains clickbait keywords.")
+        return title
